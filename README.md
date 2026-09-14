@@ -104,10 +104,16 @@ Generates the five-layer skeleton with placeholders filled.
 2. Put **"end each run by overwriting `00_LIVE.md`"** into the same prompt;
 3. Record **where the docs live and what to read first after compaction** in the agent long-term memory — so it can find its way back **even after its context is wiped**.
 
+## Known limits
+
+Honest list of what this kit **does not** solve, and where it costs more than it saves:/n**→ [KNOWN-LIMITS.md](KNOWN-LIMITS.md)** (also 中文).
+A project that only lists strengths is not trustworthy.
+
 ## Repository layout
 
 ```
 SKILL.md                     Skill description
+KNOWN-LIMITS.md              Honest caveats: what it does NOT solve
 README.md                    This file (EN + Chinese)
 LICENSE                      MIT
 scripts/init_task_docs.py    One-command skeleton generator
