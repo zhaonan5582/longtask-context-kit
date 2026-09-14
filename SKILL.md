@@ -1,6 +1,13 @@
 ---
 name: longtask-context-kit
-description: 给"长程 / 无人值守"的 agent 任务搭一套抗上下文压缩的文档体系——五层分层结构 + 覆盖式工作快照 + 任务书 + 改库纪律。当任务会跨多轮会话、会话中途会断、需要交接给"下一个自己"或别的 agent、或模型会压缩上下文时使用。
+description: >-
+  长程/无人值守 agent 任务的抗上下文压缩文档体系（五层分层 + 覆盖式工作快照 + 任务书 + 改库纪律）。
+  当任务会跨多轮会话、会话中途会断、需要交接给"下一个自己"或别的 agent、或模型会压缩上下文时使用。
+  A layered documentation scaffold for long-running / unattended agent tasks that must survive context
+  compaction: live snapshot + task book + indexed method library + case archive, plus discipline for
+  changing the library without clobbering previous authors. Use when a task spans many sessions,
+  gets interrupted mid-way, needs handover to "the next you" or another agent, or when the model
+  compacts context.
 agent_created: true
 ---
 
