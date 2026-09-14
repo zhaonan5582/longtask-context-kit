@@ -100,6 +100,21 @@ templates/04_RULES.md        Library structure and update discipline
 push_to_github.sh            Create repo + push in one go
 ```
 
+## Field-tested, not whiteboarded
+
+This kit was **extracted from a real unattended run**, and then verified in that same run (2026-09-14):
+
+| Check | Evidence | Verdict |
+|---|---|---|
+| Reads the snapshot on start | Session UI log — **first action** = `view file: 00_LIVE.md` | ✅ |
+| Overwrites the snapshot on finish | `00_LIVE.md` mtime advanced; content self-labelled `role: executor` | ✅ |
+| Syncs the task book | The task book's "next steps" had completed items struck through and re-pointed | ✅ |
+| Syncs the method library | A new method entry was appended to the library | ✅ |
+
+The same run also **found the user's real blocker** — a page that silently navigated to an
+archived "empty new-record" shell after save — which no amount of "the endpoint returns 200"
+testing would ever have surfaced. That is the difference this kit is about.
+
 ## Pitfalls (learned the hard way, Windows + mainland China network)
 
 1. **`winget install GitHub.cli` can "fake-succeed"** — the task reports completed, but `winget list` does not show it; nothing was actually installed. **Verify with `gh --version`, not with the task status.**
@@ -210,7 +225,21 @@ python scripts/init_task_docs.py ./docs "把 X 系统从零走通到 Y"
 2. 把 **"每轮收尾必须覆盖重写 `00_LIVE.md`"** 写进同一个 prompt；
 3. 把 **"文档在哪、压缩后先读哪个"** 写进 agent 的长期记忆 —— 这样**即使上下文被抹掉，它也能自己找回来**。
 
-## 踩过的坑（Windows + 国内网络，作者亲测）
+## 实战验证过，不是纸上设计
+
+这套东西是**从一次真实的无人值守运行里抽出来的**，并且**在同一次运行里得到验证**（2026-09-14）：
+
+| 检查项 | 证据 | 结论 |
+|---|---|---|
+| 开工读快照 | 会话 UI 日志 —— **第一个动作**就是 `查看文件: 00_LIVE.md` | ✅ |
+| 收尾覆盖写快照 | `00_LIVE.md` 的 mtime 前移；内容里自称"执行岗" | ✅ |
+| 同步任务书 | 任务书"下一步"里已完成项被划掉、重新指向 | ✅ |
+| 同步方法论 | 方法论库追加了新条目 | ✅ |
+
+同一次运行还**挖出了用户真正卡住的根因** —— 保存后页面**悄悄跳转**到一张被归档成"新增态空壳"的页；
+这种洞，"接口返回 200"式的验收**永远测不出来**。这正是本 kit 存在的意义。
+
+## 踩过的坑
 
 1. **`winget install GitHub.cli` 会"假成功"** —— 任务显示 completed，但 `winget list` 里找不到，实际没装上。**判据：用 `gh --version` 实测，不要看任务状态。**
 2. **国内直连 GitHub releases 不通**（curl `exit 56` / requests `ProxyError`）。**加镜像前缀可用**：`https://ghproxy.net/https://github.com/...`。
