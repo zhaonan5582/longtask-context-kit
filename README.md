@@ -46,6 +46,21 @@ python scripts/init_task_docs.py ./docs "把 X 系统从零走通到 Y"
 同类思路（原子化 + 互链 + 分层），但**读者是 agent**：
 它不会"点链接"，只会"按索引定位再读那一段"⇒ 用**索引 + 锚点**比做图谱更省上下文。
 
+## 踩过的坑（如果你也要装 `gh` 发东西）
+
+作者在 Windows + 国内网络环境下走过一遍，三条经验直接给：
+
+1. **`winget install GitHub.cli` 会"假成功"** —— 任务显示 completed，但 `winget list` 里找不到，
+   实际没装上。**判据：装完必须 `gh --version` 实测，不能只看任务状态。**
+2. **国内直连 GitHub releases 不通**（curl `exit 56` / requests `ProxyError`）。
+   **加镜像前缀可用**：`https://ghproxy.net/https://github.com/...`。
+3. **`GH_CONFIG_DIR` 必须给 Windows 路径形式** —— 给 Git Bash 的 `/d/xxx` 时，
+   `gh`（Windows 程序）不认识，**授权会显示成功但 token 存不下来**，表现为"又变回未登录"。
+   用 `D:/xxx` 才对。（另：某些机器上 `~/.config/gh` 创建不了，此时必须显式指定 `GH_CONFIG_DIR`。）
+
+> 第 1 条和第 3 条其实是同一类毛病：**"看起来成功了"不等于"真成了"** ——
+> 这和本 kit 主张的「跳过 ≠ 通过」是同一条原则。
+
 ## License
 
 MIT
