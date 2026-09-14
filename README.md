@@ -8,16 +8,35 @@
 
 ## The problem
 
-Long-running agent tasks fail for a reason that has nothing to do with technical difficulty:
+Long-running agent tasks don't fail because the model is dumb.
+They fail because **you can't tell whether it actually did the work.**
 
-> **"It said the run was complete. Why did it break the moment I tried it?"**
+> "It said the run was complete. Why did it break the moment I tried it?"
 
-Two root causes, over and over:
+Three ways this happens, over and over:
 
-1. **Acceptance was self-certified with stale data.** The agent verified *a* path that happened to work — not the path the user actually walks.
-2. **Skipped test cases vanish from the statistics.** A case marked "skip" silently leaves the denominator, so "94/97 covered" holds on paper and collapses in reality.
+1. **Compaction erases the working state** — uncontrollably, out of order. The current sub-task and three-day-old small talk are treated as equally disposable.
+2. **Acceptance is self-certified with stale data** — the agent verifies *a* path that happens to work, not the path the user actually walks.
+3. **Skipped cases vanish from the statistics** — a case marked "skip" silently leaves the denominator, so "94/97 covered" holds on paper and collapses in production.
 
-Meanwhile the model's own context gets compacted — **uncontrollably and out of order** — treating the current sub-task and three-day-old small talk as equally disposable.
+## What this kit actually is
+
+**Not** "memory management for agents". It is **anti-self-deception, with verifiable traces**:
+
+> **It doesn't make the agent smarter. It makes the agent's bullshit un-hideable.**
+
+Every rule is a tripwire:
+
+| Rule | What it catches |
+|---|---|
+| Snapshot is **overwritten**, must not go stale | Didn't update it? The old file is still there — **mtime gives you away** |
+| **Skipped != passed** | Anything skipped must be declared `NOT-TESTED` — it cannot quietly stay in the denominator |
+| Acceptance uses **fresh data** | No self-certifying with "the old dataset that already worked" |
+| **Completion state + idle guard** | No "produce something to look busy" edits on already-correct work |
+| **External night watch** | Verification does not rely on the agent's own report — a third party checks mtimes |
+
+Saving tokens is a **side effect, not the pitch**. The pitch is:
+**can you hand it a long task, walk away, and trust tomorrow's result?**
 
 ## The fix: five layers, read as little as possible
 
@@ -148,16 +167,34 @@ MIT
 
 ## 它解决什么问题
 
-长任务最常见的翻车方式，跟技术难度无关：
+长程 agent 任务翻车，**不是因为模型笨**，而是因为 —— **你没法判断它到底干没干。**
 
 > **"不是跑通了吗？我上来怎么就卡住了。"**
 
-根因反复就两条：
+这事的成因反复就三条：
 
-1. **验收用老数据自证** —— agent 验证的是*某条*恰好能走的路，不是用户真正走的那条；
-2. **跳过项在统计里消失** —— 标了"跳过"的用例悄无声息地离开分母，"覆盖率 94/97"于是纸面成立、真机崩塌。
+1. **上下文压缩把工作状态抹掉** —— 不可控、无序，把"当前小任务"和"三天前的寒暄"同等对待；
+2. **验收用老数据自证** —— 它验的是*某条*恰好能走的路，不是用户真正走的那条；
+3. **跳过项在统计里消失** —— 标了"跳过"的用例悄无声息地离开分母，"覆盖率 94/97"于是纸面成立、真机崩塌。
 
-同时模型自己的上下文还在被压缩 —— **不可控、无序**，把"当前小任务"和"三天前的寒暄"同等对待。
+## 这套东西**真正**是什么
+
+**不是**"给 agent 做记忆管理"，而是 —— **防自欺，而且留下可查证的痕迹**：
+
+> **它不让 agent 更聪明，它让 agent 的"糊弄"藏不住。**
+
+每一条纪律都是一道**抓现行的机关**：
+
+| 纪律 | 抓什么 |
+|---|---|
+| 快照**覆盖式**、不许过期 | 没更新？旧文件还在 —— **mtime 一眼看穿** |
+| **跳过 ≠ 通过** | 想跳过的必须显式认账 `NOT-TESTED`，**不能悄悄留在分母里** |
+| 验收用**全新数据** | 不许拿"那条已经跑通过的老数据"自证 |
+| **完成态声明 + 空转防护** | 不许为了"显得有产出"去改已经正确的东西 |
+| **外部守夜人** | **不靠 agent 自述** —— 第三方查 mtime 客观验证 |
+
+**省 token 是顺带的结果，不是卖点。** 卖点是：
+**你敢不敢把一个长任务丢给它、人走开，然后相信明天的结果？**
 
 ## 解法：五层结构，用多少读多少
 
